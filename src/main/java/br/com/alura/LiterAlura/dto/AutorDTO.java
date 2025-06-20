@@ -1,10 +1,10 @@
-package br.com.alura.LiterAlura.interfaces;
+package br.com.alura.LiterAlura.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IAutor{
+public class AutorDTO {
     @JsonAlias("name") String nome;
     @JsonAlias("birth_year") int data_nascimento;
     @JsonAlias("death_year") int data_falecimento;
@@ -27,7 +27,8 @@ public class IAutor{
     public void setData_falecimento(int data_falecimento) {
         this.data_falecimento = data_falecimento;
     }
-
     
+    
+
 
 }

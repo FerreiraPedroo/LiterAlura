@@ -7,11 +7,11 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import br.com.alura.LiterAlura.dto.LivroDTO;
-import br.com.alura.LiterAlura.models.LivroModel;
+
+
 
 @Service
 public class ApiService {

@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "livros")
 public class LivroModel {
@@ -22,12 +21,10 @@ public class LivroModel {
     private AutorModel autor;
 
     private String[] resumos;
-    private String[] tradutores;
     private String[] assuntos;
     private String[] idiomas;
     private int contagem_downloads;
 
-    
     public Long getId() {
         return id;
     }
@@ -44,21 +41,12 @@ public class LivroModel {
         this.titulo = titulo;
     }
 
-
     public String[] getResumos() {
         return resumos;
     }
 
     public void setResumos(String[] resumos) {
         this.resumos = resumos;
-    }
-
-    public String[] getTradutores() {
-        return tradutores;
-    }
-
-    public void setTradutores(String[] tradutores) {
-        this.tradutores = tradutores;
     }
 
     public String[] getAssuntos() {
