@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.alura.LiterAlura.dto.LivroDTO;
 import br.com.alura.LiterAlura.services.ApiService;
-import br.com.alura.LiterAlura.services.MenuService;
+import br.com.alura.LiterAlura.services.TUIService;
 import br.com.alura.LiterAlura.utils.FormatarTextoUtil;
 
 @SpringBootApplication
@@ -21,7 +21,7 @@ public class LiterAluraApplication implements CommandLineRunner {
 	}
 
 	@Autowired
-	MenuService menuServico;
+	TUIService textoInterfaceServico;
 
 	@Autowired
 	ApiService api;
@@ -35,61 +35,59 @@ public class LiterAluraApplication implements CommandLineRunner {
 		while (menuRodando) {
 
 			switch (menuSelecionado) {
-				case 0:
-					menuServico.exibirMenuPrincipal();
-					menuSelecionado = leitura.nextInt();
+			case 0:
+				textoInterfaceServico.exibirMenuPrincipal();
+				menuSelecionado = leitura.nextInt();
+				leitura.nextLine();
 
-					if (menuSelecionado == 0) {
-						menuRodando = false;
-						continue;
-					}
+				if (menuSelecionado == 0) {
+					menuRodando = false;
+					continue;
+				}
 
-					menuServico.limparTela();
-					break;
+				textoInterfaceServico.limparTela();
+				break;
 
-				case 1:
-					menuServico.exibirBuscarLivro();
-					var textoDigitado = leitura.nextLine();
+			case 1:
+				textoInterfaceServico.exibirBuscarLivro();
+				var textoDigitado = leitura.nextLine();
 
-					if (textoDigitado == "0") {
-						menuServico.limparTela();
-						menuSelecionado = 1;
-					} else {
-						String textoFormatado = FormatarTextoUtil.substituirEspacos(textoDigitado);
-						List<LivroDTO> livros = api.obterLivros(textoFormatado);
+				if (textoDigitado == "0") {
+					textoInterfaceServico.limparTela();
+					menuSelecionado = 0;
+				} else {
+					String textoFormatado = FormatarTextoUtil.substituirEspacos(textoDigitado);
+					List<LivroDTO> livros = api.obterLivros(textoFormatado);
+					
 
-						for (LivroDTO livroDTO : livros) {
+					textoInterfaceServico.exibirLivrosBuscados(livros);
 
-							System.out.println(livroDTO.getTitulo());
+				}
 
-							
-						}
-					}
-
-					break;
-				case 2:
-					break;
-				case 3:
-					break;
-				case 4:
-					break;
-				case 5:
-					break;
-				case 6:
-					break;
-				case 7:
-					break;
-				case 8:
-					break;
-				case 9:
-					break;
-				case 10:
-					break;
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			case 8:
+				break;
+			case 9:
+				break;
+			case 10:
+				break;
 			}
 		}
 
-		menuServico.limparTela();
-		menuServico.exibirSairPrograma();
+		textoInterfaceServico.limparTela();
+		textoInterfaceServico.exibirSairPrograma();
 	}
 
 }
