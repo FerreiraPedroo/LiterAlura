@@ -4,31 +4,17 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.alura.LiterAlura.dto.LivroDTO;
-
-
-
 @Service
-public class ApiService {
+public class ConsumoApiService {
 
-    private ConverteLivroService converteLivro;
-
-    @Autowired
-    public ApiService(ConverteLivroService converteLivro) {
-        this.converteLivro = converteLivro;
-    }
-
-    public List<LivroDTO> obterLivros(String param) {
+    public String obterLivro(String nomeLivro) {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest
                 .newBuilder()
-                .uri(URI.create("https://gutendex.com/books/?search="+param))
+                .uri(URI.create("https://gutendex.com/books/?search=" + nomeLivro))
                 .build();
 
         HttpResponse<String> response;
@@ -40,9 +26,6 @@ public class ApiService {
             throw new RuntimeException(e);
         }
 
-        List<LivroDTO> json = converteLivro.obterDados(response.body(), LivroDTO.class);
-
-        return json;
-
+        return response.body();
     }
 }

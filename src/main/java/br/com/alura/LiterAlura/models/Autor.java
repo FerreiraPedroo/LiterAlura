@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "autores")
-public class AutorModel {
+public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,7 @@ public class AutorModel {
     private int data_falecimento;
 
     @OneToMany(mappedBy = "autor")
-    private List<LivroModel> livros;
+    private List<Livro> livros;
 
     // public AutorModel(String nome, int data_nascimento, int data_falecimento) {
     //     this.nome = nome;
@@ -60,11 +60,11 @@ public class AutorModel {
         this.data_falecimento = data_falecimento;
     }
 
-    public List<LivroModel> getLivros() {
+    public List<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(List<LivroModel> livros) {
+    public void setLivros(List<Livro> livros) {
         this.livros = livros;
     }
 

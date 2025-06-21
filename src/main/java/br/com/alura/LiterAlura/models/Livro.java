@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "livros")
-public class LivroModel {
+public class Livro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,11 +18,7 @@ public class LivroModel {
 
     @ManyToOne
     @JoinColumn(name = "autor_id")
-    private AutorModel autor;
-
-    private String[] resumos;
-    private String[] assuntos;
-    private String[] idiomas;
+    private Autor autor;
     private int contagem_downloads;
 
     public Long getId() {
@@ -41,30 +37,6 @@ public class LivroModel {
         this.titulo = titulo;
     }
 
-    public String[] getResumos() {
-        return resumos;
-    }
-
-    public void setResumos(String[] resumos) {
-        this.resumos = resumos;
-    }
-
-    public String[] getAssuntos() {
-        return assuntos;
-    }
-
-    public void setAssuntos(String[] assuntos) {
-        this.assuntos = assuntos;
-    }
-
-    public String[] getIdiomas() {
-        return idiomas;
-    }
-
-    public void setIdiomas(String[] idiomas) {
-        this.idiomas = idiomas;
-    }
-
     public int getContagem_downloads() {
         return contagem_downloads;
     }
@@ -73,11 +45,11 @@ public class LivroModel {
         this.contagem_downloads = contagem_downloads;
     }
 
-    public AutorModel getAutor() {
+    public Autor getAutor() {
         return autor;
     }
 
-    public void setAutor(AutorModel autor) {
+    public void setAutor(Autor autor) {
         this.autor = autor;
     }
 
