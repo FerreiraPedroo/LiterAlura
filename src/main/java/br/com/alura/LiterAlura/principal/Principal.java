@@ -1,9 +1,11 @@
 package br.com.alura.LiterAlura.principal;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import br.com.alura.LiterAlura.DTO.AutorDTO;
+import org.springframework.aot.hint.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.alura.LiterAlura.DTO.DadosDTO;
@@ -23,26 +25,18 @@ public class Principal {
     private LivroRepository livroRepositorio;
     @Autowired
     private AutorRepository autorRepositorio;
-    @Autowired
-    private TUIService textoInterfaceServico;
-    @Autowired
-    private ConsumoApiService consumoApiServico;
-    @Autowired
-    private ConversorService converteLivro;
 
+    private ConsumoApiService consumoApiServico = new ConsumoApiService();
+    private ConversorService converteLivro = new ConversorService();
+    private TUIService textoInterfaceServico = new TUIService();
     private Scanner teclado = new Scanner(System.in);
 
-    public Principal(LivroRepository livroRepositorio, AutorRepository autorRepositorio,
-            TUIService textoInterfaceServico, ConsumoApiService consumoApiServico, ConversorService converteLivro) {
+    public Principal(LivroRepository livroRepositorio, AutorRepository autorRepositorio) {
         this.livroRepositorio = livroRepositorio;
         this.autorRepositorio = autorRepositorio;
-        this.textoInterfaceServico = textoInterfaceServico;
-        this.consumoApiServico = consumoApiServico;
-        this.converteLivro = converteLivro;
     }
 
     public void exibirMenu() {
-        textoInterfaceServico.limparTela();
         var menuSelecionado = 0;
         boolean menuRodando = true;
 
@@ -58,44 +52,42 @@ public class Principal {
                         continue;
                     }
 
-                    textoInterfaceServico.limparTela();
                     break;
 
                 case 1:
                     textoInterfaceServico.exibirBuscarLivro();
                     var textoDigitado = teclado.nextLine();
 
-                    if (textoDigitado == "0") {
-                        textoInterfaceServico.limparTela();
+                    if (textoDigitado.equals("0")) {
                         menuSelecionado = 0;
+                    } else if (textoDigitado.equals("")) {
+                        textoInterfaceServico.exibirLivroNaoEncontrado();
+                        teclado.nextLine();
                     } else {
-                        String textoFormatado = FormatarTextoUtil.substituirEspacos(textoDigitado);
-                        String respostaAPI = consumoApiServico.obterLivro(textoFormatado);
+                        String tituloFormatado = FormatarTextoUtil.substituirEspacos(textoDigitado);
 
-                        var dadosBusca = converteLivro.obterDados(respostaAPI, DadosDTO.class);
+                        String respostaAPI = consumoApiServico.obterLivro(tituloFormatado);
 
-                        Optional<LivroDTO> dadosLivro = dadosBusca.resultado().stream()
-                                .filter(livro -> livro.titulo().toUpperCase().contains(textoFormatado.toUpperCase()))
-                                .findFirst();
+                        var dadosLivroConvertido = converteLivro.obterDados(respostaAPI, DadosDTO.class);
+
+                        Optional<LivroDTO> dadosLivro = dadosLivroConvertido.resultados().stream().filter(livro -> livro.titulo().toUpperCase().contains(tituloFormatado.toUpperCase())).findFirst();
 
                         if (dadosLivro.isPresent()) {
-                            LivroDTO livro = dadosLivro.get();
+                            LivroDTO livroDados = dadosLivro.get();
 
-                            Optional<Livro> livroModel = livroRepositorio.buscarLivroPorTitulo(livro.titulo());
+                            Optional<Livro> livroModel = livroRepositorio.buscarLivroPorTitulo(livroDados.titulo());
 
                             if (livroModel.isPresent()) {
-                                System.out.println("Livro encontrado");
+                                textoInterfaceServico.exibirLivroEncontrado(livroDados);
                             } else {
                                 Autor autorInfo;
-
-                                Optional<Autor> autorEncontrado = autorRepositorio
-                                        .buscarAutorPorNome(livro.autores().get(0).nome());
+                                Optional<Autor> autorEncontrado = autorRepositorio.buscarAutorPorNome(livroDados.autor().get(0).nome());
 
                                 if (!autorEncontrado.isPresent()) {
                                     Autor novoAutor = new Autor();
-                                    novoAutor.setNome(livro.autores().get(0).nome());
-                                    novoAutor.setData_nascimento(livro.autores().get(0).data_nascimento());
-                                    novoAutor.setData_falecimento(livro.autores().get(0).data_falecimento());
+                                    novoAutor.setNome(livroDados.autor().get(0).nome());
+                                    novoAutor.setData_nascimento(livroDados.autor().get(0).data_nascimento());
+                                    novoAutor.setData_falecimento(livroDados.autor().get(0).data_falecimento());
 
                                     autorInfo = autorRepositorio.save(novoAutor);
                                     System.out.println(autorInfo);
@@ -104,31 +96,102 @@ public class Principal {
                                 }
 
                                 Livro novoLivro = new Livro();
-                                novoLivro.setTitulo(livro.titulo());
+                                novoLivro.setTitulo(livroDados.titulo());
                                 novoLivro.setAutor(autorInfo);
-                                novoLivro.setContagem_downloads(livro.contagem_downloads());
+                                novoLivro.setIdiomas(livroDados.idiomas());
+                                novoLivro.setContagem_downloads(livroDados.contagem_downloads());
 
                                 Livro livroInfo = livroRepositorio.save(novoLivro);
 
+                                AutorDTO autor = new AutorDTO(livroInfo.getAutor().getNome(), livroInfo.getAutor().getData_nascimento(), livroInfo.getAutor().getData_falecimento());
+
+                                LivroDTO livro = new LivroDTO(livroInfo.getTitulo(), List.of(autor), livroInfo.getIdiomas(), livroInfo.getContagem_downloads()
+
+                                );
+
+                                textoInterfaceServico.exibirLivroEncontrado(livro);
                             }
-                            textoInterfaceServico.exibirLivroEncontrado(livro);
+
+                            teclado.nextLine();
 
                         } else {
                             textoInterfaceServico.exibirLivroNaoEncontrado();
                             teclado.nextLine();
-                            textoInterfaceServico.limparTela();
                         }
+
 
                     }
 
                     break;
+
                 case 2:
+                    List<Livro> livros = livroRepositorio.findAll();
+
+                    List<LivroDTO> livrosInfo = livros.stream().map(livro -> new LivroDTO(livro.getTitulo(), List.of(new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getData_nascimento(), livro.getAutor().getData_falecimento())), livro.getIdiomas(), livro.getContagem_downloads())).toList();
+
+                    textoInterfaceServico.exibirLivrosRegistrados(livrosInfo);
+
+                    teclado.nextLine();
+                    menuSelecionado = 0;
+
                     break;
+
                 case 3:
+                    List<Autor> autores = autorRepositorio.findAll();
+//                    List<Autor> autoresInfo = autores.stream().map(autor -> new AutorDTO(autor.getNome(), autor.getData_nascimento(), autor.getData_falecimento())).toList();
+
+                    textoInterfaceServico.exibirAutoresRegistrados(autores);
+
+                    teclado.nextLine();
+                    menuSelecionado = 0;
+
                     break;
+
                 case 4:
+                    textoInterfaceServico.exibirBuscaAutorPorAno();
+                    var anoDigitado = teclado.nextLine();
+
+                    int anoNumerico;
+                    try {
+                        anoNumerico = Integer.parseInt(anoDigitado);
+                    } catch (NumberFormatException e) {
+                        textoInterfaceServico.exibirAnoDigitadoInvalido();
+                        teclado.nextLine();
+                        continue;
+                    }
+
+                    if (anoNumerico == 0) {
+                        menuSelecionado = 0;
+                        continue;
+                    }
+
+                    Optional<Autor> autoresPorAno = autorRepositorio.buscaAutorPorAno(anoNumerico);
+                    List<Autor> autoresPorAnoLista = autoresPorAno.stream().toList();
+
+                    textoInterfaceServico.exibirAutorVivoDeterminadoAno(autoresPorAnoLista);
+
+                    teclado.nextLine();
+                    menuSelecionado = 0;
+
                     break;
+
                 case 5:
+                    textoInterfaceServico.exibirEscolherLivroDeteminadoIdioma();
+
+                    var idiomaDigitado = teclado.nextLine();
+
+                    if (idiomaDigitado.equals("0")) {
+                        menuSelecionado = 0;
+                        continue;
+                    }
+
+                    List<String> idiomas = List.of("pt", "fr", "en");
+
+                    if (idiomas.stream().filter(i -> i == idiomaDigitado).toList().size() == 0) {
+                        
+                    }
+
+
                     break;
                 case 6:
                     break;
@@ -143,7 +206,6 @@ public class Principal {
             }
         }
 
-        textoInterfaceServico.limparTela();
         textoInterfaceServico.exibirSairPrograma();
 
     }

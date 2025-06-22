@@ -15,10 +15,10 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
-
     @ManyToOne
     @JoinColumn(name = "autor_id")
     private Autor autor;
+    private String[] idiomas;
     private int contagem_downloads;
 
     public Long getId() {
@@ -51,6 +51,14 @@ public class Livro {
 
     public void setAutor(Autor autor) {
         this.autor = autor;
+    }
+
+    public String[] getIdiomas() {
+        return idiomas;
+    }
+
+    public void setIdiomas(String[] idiomas) {
+        this.idiomas = idiomas;
     }
 
 }

@@ -16,27 +16,20 @@ import br.com.alura.LiterAlura.services.TUIService;
 @SpringBootApplication
 public class LiterAluraApplication implements CommandLineRunner {
 
-	@Autowired
-	private LivroRepository livroRepositorio;
-	@Autowired
-	private AutorRepository autorRepositorio;
-	@Autowired
-	private TUIService textoInterfaceServico;
-	@Autowired
-	private ConsumoApiService consumoApiServico;
-	@Autowired
-	private ConversorService converteLivro;
+    @Autowired
+    private LivroRepository livroRepositorio;
+    @Autowired
+    private AutorRepository autorRepositorio;
 
-	public static void main(String[] args) {
-		SpringApplication.run(LiterAluraApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(LiterAluraApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
-		Principal principal = new Principal(livroRepositorio, autorRepositorio, textoInterfaceServico,
-				consumoApiServico, converteLivro);
-		principal.exibirMenu();
+    @Override
+    public void run(String... args) throws Exception {
+        Principal principal = new Principal(livroRepositorio, autorRepositorio);
+        principal.exibirMenu();
 
-	}
+    }
 
 }

@@ -13,21 +13,11 @@ public class ConversorService implements IConverteLivro {
 
     @Override
     public <T> T obterDados(String json, Class<T> classe) {
-
         try {
-            // JsonNode node = mapper.readTree(json);
-            // JsonNode results = node.get("results");
-            // System.out.println(results.size());
-            // System.out.println(results.toString());
-
-            // if (results.size() == 0) {
-            //     return null;
-            // }
-
             return mapper.readValue(json, classe);
-
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
