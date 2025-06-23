@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.alura.LiterAlura.models.Autor;
+import br.com.alura.LiterAlura.models.Livro;
 import org.springframework.stereotype.Service;
 
 import br.com.alura.LiterAlura.DTO.LivroDTO;
@@ -153,9 +154,9 @@ public class TUIService {
         System.out.println("│    AUTORES VIVOS                                                         │");
         System.out.println("│                                                                          │");
 
-        if(autores.size() == 0){
+        if (autores.size() == 0) {
             System.out.println("│    NENHUM AUTOR ENCONTRADO                                               │");
-        }else {
+        } else {
             for (Autor autor : autores) {
                 String nomeCompletar = FormatarTextoUtil.caractersCompletar(autor.getNome(), 12, 1);
                 String nascimentoCompletar = FormatarTextoUtil.caractersCompletar(Integer.toString(autor.getData_nascimento()), 26, 1);
@@ -176,7 +177,7 @@ public class TUIService {
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
     }
 
-    public void exibirBuscaAutorPorAno(){
+    public void exibirBuscaAutorPorAno() {
         this.limparTela();
         System.out.println("┌──────────────────────────────────────────────────────────────────────────┐");
         System.out.println("│                                                                          │");
@@ -192,7 +193,7 @@ public class TUIService {
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
     }
 
-    public void exibirAnoDigitadoInvalido(){
+    public void exibirAnoDigitadoInvalido() {
         this.limparTela();
         this.exibirMenuCabecalho();
 
@@ -204,16 +205,68 @@ public class TUIService {
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
     }
 
-    public void exibirEscolherLivroDeteminadoIdioma(){
+    public void exibirEscolherLivroDeteminadoIdioma() {
         this.limparTela();
         this.exibirMenuCabecalho();
         System.out.println("│    ESCOLHA UM IDIOMA                                                     │");
         System.out.println("│                                                                          │");
-        System.out.println("│    [pt] - Português                                                      │");
+        System.out.println("│    [es] - Espanhol                                                       │");
         System.out.println("│    [fr] - Francês                                                        │");
         System.out.println("│    [en] - Inglês                                                         │");
+        System.out.println("│    [pt] - Português                                                      │");
         System.out.println("│                                                                          │");
         System.out.println("│  0 - Voltar                                                              │");
+        System.out.println("│                                                                          │");
+        System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
+    }
+
+    public void exibirLivrosPorIdioma(List<Livro> livros) {
+        this.limparTela();
+        this.exibirMenuCabecalho();
+
+        System.out.println("│    LIVROS ENCONTRADOS                                                    │");
+        System.out.println("│                                                                          │");
+        for (Livro livro : livros) {
+            String tituloCompletar = FormatarTextoUtil.caractersCompletar(livro.getTitulo(), 14, 1);
+            String autorCompletar = FormatarTextoUtil.caractersCompletar(livro.getAutor().getNome(), 14, 1);
+            String idiomaCompletar = FormatarTextoUtil.caractersCompletar(Arrays.stream(livro.getIdiomas()).reduce("", (acc, cur) -> cur == "" ? acc : acc + cur + " | "), 14, 1);
+            String contagemDownloadsCompletar = FormatarTextoUtil.caractersCompletar(Integer.toString(livro.getContagem_downloads()).trim(), 27, 1);
+
+            System.out.println("│    -----------------------------------------------------------------     │");
+            System.out.println("│     Titulo: " + livro.getTitulo() + tituloCompletar + "│");
+            System.out.println("│     Autor : " + livro.getAutor().getNome() + autorCompletar + "│");
+            System.out.println("│     Idioma: " + Arrays.stream(livro.getIdiomas()).reduce("", (acc, cur) -> cur == "" ? acc : acc + cur + " | ") + idiomaCompletar + "│");
+            System.out.println("│     Número de downloads: " + livro.getContagem_downloads() + contagemDownloadsCompletar + "│");
+            System.out.println("│    -----------------------------------------------------------------     │");
+            System.out.println("│                                                                          │");
+
+        }
+        System.out.println("│                                                                          │");
+        System.out.println("│  [ENTER] - Voltar                                                        │");
+        System.out.println("│                                                                          │");
+        System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
+    }
+
+    public void exibirLivroNoIdiomaNaoEncontrado() {
+        this.limparTela();
+        this.exibirMenuCabecalho();
+
+        System.out.println("│    NENHUM LIVRO NO IDIOMA SELECIONADO FOI ENCONTRADO                     │");
+        System.out.println("│                                                                          │");
+        System.out.println("│                                                                          │");
+        System.out.println("│  [ENTER] - Voltar                                                        │");
+        System.out.println("│                                                                          │");
+        System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
+    }
+
+    public void exibirIdiomaInvalido() {
+        this.limparTela();
+        this.exibirMenuCabecalho();
+
+        System.out.println("│    IDIOMA INVÁLIDO                                                       │");
+        System.out.println("│                                                                          │");
+        System.out.println("│                                                                          │");
+        System.out.println("│  [ENTER] - Voltar                                                        │");
         System.out.println("│                                                                          │");
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
     }

@@ -124,6 +124,7 @@ public class Principal {
 
                     break;
 
+
                 case 2:
                     List<Livro> livros = livroRepositorio.findAll();
 
@@ -136,6 +137,7 @@ public class Principal {
 
                     break;
 
+
                 case 3:
                     List<Autor> autores = autorRepositorio.findAll();
 //                    List<Autor> autoresInfo = autores.stream().map(autor -> new AutorDTO(autor.getNome(), autor.getData_nascimento(), autor.getData_falecimento())).toList();
@@ -146,6 +148,7 @@ public class Principal {
                     menuSelecionado = 0;
 
                     break;
+
 
                 case 4:
                     textoInterfaceServico.exibirBuscaAutorPorAno();
@@ -175,6 +178,7 @@ public class Principal {
 
                     break;
 
+
                 case 5:
                     textoInterfaceServico.exibirEscolherLivroDeteminadoIdioma();
 
@@ -185,14 +189,26 @@ public class Principal {
                         continue;
                     }
 
-                    List<String> idiomas = List.of("pt", "fr", "en");
+                    List<String> idiomas = List.of("pt", "fr", "en", "es");
 
-                    if (idiomas.stream().filter(i -> i == idiomaDigitado).toList().size() == 0) {
-                        
+                    if (!idiomas.stream().filter(i -> Objects.equals(i, idiomaDigitado)).toList().isEmpty()) {
+
+                        List<Livro> livrosPorIdioma = livroRepositorio.buscarLivroPorIdioma(idiomaDigitado);
+
+                        if (!livrosPorIdioma.isEmpty()) {
+                            textoInterfaceServico.exibirLivrosPorIdioma(livrosPorIdioma.stream().toList());
+                            teclado.nextLine();
+                            continue;
+                        }
+                        textoInterfaceServico.exibirLivroNoIdiomaNaoEncontrado();
+                        teclado.nextLine();
+                        continue;
                     }
-
-
+                    textoInterfaceServico.exibirIdiomaInvalido();
+                    teclado.nextLine();
                     break;
+
+
                 case 6:
                     break;
                 case 7:
