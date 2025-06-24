@@ -154,7 +154,7 @@ public class TUIService {
         System.out.println("│    AUTORES VIVOS                                                         │");
         System.out.println("│                                                                          │");
 
-        if (autores.size() == 0) {
+        if (autores.isEmpty()) {
             System.out.println("│    NENHUM AUTOR ENCONTRADO                                               │");
         } else {
             for (Autor autor : autores) {

@@ -60,7 +60,7 @@ public class Principal {
 
                     if (textoDigitado.equals("0")) {
                         menuSelecionado = 0;
-                    } else if (textoDigitado.equals("")) {
+                    } else if (textoDigitado.isEmpty()) {
                         textoInterfaceServico.exibirLivroNaoEncontrado();
                         teclado.nextLine();
                     } else {
@@ -70,7 +70,7 @@ public class Principal {
 
                         var dadosLivroConvertido = converteLivro.obterDados(respostaAPI, DadosDTO.class);
 
-                        Optional<LivroDTO> dadosLivro = dadosLivroConvertido.resultados().stream().filter(livro -> livro.titulo().toUpperCase().contains(tituloFormatado.toUpperCase())).findFirst();
+                        Optional<LivroDTO> dadosLivro = dadosLivroConvertido.resultados().stream().filter(livro -> livro.titulo().toUpperCase().equals(tituloFormatado.toUpperCase())).findFirst();
 
                         if (dadosLivro.isPresent()) {
                             LivroDTO livroDados = dadosLivro.get();
@@ -130,6 +130,27 @@ public class Principal {
 
                     List<LivroDTO> livrosInfo = livros.stream().map(livro -> new LivroDTO(livro.getTitulo(), List.of(new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getData_nascimento(), livro.getAutor().getData_falecimento())), livro.getIdiomas(), livro.getContagem_downloads())).toList();
 
+                    int pagina = 1;
+                    int totalPaginas = livrosInfo.size() > 5 ? Math.abs(livros.size() / 5) : 1;
+
+                    boolean paginacao = true;
+                    while (paginacao) {
+                        int inicioIndex = (pagina * 4) - 4;
+
+                        textoInterfaceServico.exibirLivrosRegistrados(livrosInfo.subList(inicioIndex, pagina * 4));
+                        var exibirLivroOpcao = teclado.nextLine();
+                        if(exibirLivroOpcao == "0"){
+                            menuSelecionado = 0;
+                            continue;
+                        } else if (exibirLivroOpcao.equalsIgnoreCase("P") && pagina < totalPaginas) {
+                            pagina += 1;
+                        } else if (exibirLivroOpcao.equalsIgnoreCase("A") && totalPaginas > pagina && pagina > 1){
+                            pagina -= 1;
+                        }
+
+                    }
+
+
                     textoInterfaceServico.exibirLivrosRegistrados(livrosInfo);
 
                     teclado.nextLine();
@@ -168,10 +189,9 @@ public class Principal {
                         continue;
                     }
 
-                    Optional<Autor> autoresPorAno = autorRepositorio.buscaAutorPorAno(anoNumerico);
-                    List<Autor> autoresPorAnoLista = autoresPorAno.stream().toList();
+                    List<Autor> autoresPorAno = autorRepositorio.buscaAutorPorAno(anoNumerico);
 
-                    textoInterfaceServico.exibirAutorVivoDeterminadoAno(autoresPorAnoLista);
+                    textoInterfaceServico.exibirAutorVivoDeterminadoAno(autoresPorAno);
 
                     teclado.nextLine();
                     menuSelecionado = 0;

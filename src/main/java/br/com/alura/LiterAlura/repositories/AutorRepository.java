@@ -1,5 +1,6 @@
 package br.com.alura.LiterAlura.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,5 @@ public interface AutorRepository extends JpaRepository<Autor, Long> {
     Optional<Autor> buscarAutorPorNome(String autorNome);
 
     @Query("SELECT a FROM Autor a WHERE a.data_nascimento < :ano AND a.data_falecimento > :ano")
-    Optional<Autor> buscaAutorPorAno(int ano);
+    List<Autor> buscaAutorPorAno(int ano);
 }
