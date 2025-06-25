@@ -65,16 +65,13 @@ public class Principal {
                         teclado.nextLine();
                     } else {
                         String tituloFormatado = FormatarTextoUtil.substituirEspacos(textoDigitado);
-
                         String respostaAPI = consumoApiServico.obterLivro(tituloFormatado);
 
                         var dadosLivroConvertido = converteLivro.obterDados(respostaAPI, DadosDTO.class);
-
-                        Optional<LivroDTO> dadosLivro = dadosLivroConvertido.resultados().stream().filter(livro -> livro.titulo().toUpperCase().equals(tituloFormatado.toUpperCase())).findFirst();
+                        Optional<LivroDTO> dadosLivro = dadosLivroConvertido.resultados().stream().filter(l -> l.titulo().equalsIgnoreCase(textoDigitado)).findFirst();
 
                         if (dadosLivro.isPresent()) {
                             LivroDTO livroDados = dadosLivro.get();
-
                             Optional<Livro> livroModel = livroRepositorio.buscarLivroPorTitulo(livroDados.titulo());
 
                             if (livroModel.isPresent()) {
@@ -127,41 +124,50 @@ public class Principal {
 
                 case 2:
                     List<Livro> livros = livroRepositorio.findAll();
-
                     List<LivroDTO> livrosInfo = livros.stream().map(livro -> new LivroDTO(livro.getTitulo(), List.of(new AutorDTO(livro.getAutor().getNome(), livro.getAutor().getData_nascimento(), livro.getAutor().getData_falecimento())), livro.getIdiomas(), livro.getContagem_downloads())).toList();
 
-                    int pagina = 1;
-                    int totalPaginas = livrosInfo.size() > 5 ? Math.abs(livros.size() / 5) : 1;
+                    int paginaAtual = 1;
+                    int totalPaginas = (livrosInfo.size() - 1) > 3 ? (int) Math.ceil(((livrosInfo.size() - 1.0) / 3.0)) : 1;
+
+                    System.out.println("livrosInfo.size():" + livrosInfo.size());
+                    System.out.println("totalPaginas:" + totalPaginas);
+                    System.out.println("paginaAtual:" + paginaAtual);
 
                     boolean paginacao = true;
-                    while (paginacao) {
-                        int inicioIndex = (pagina * 4) - 4;
 
-                        textoInterfaceServico.exibirLivrosRegistrados(livrosInfo.subList(inicioIndex, pagina * 4));
+                    while (paginacao) {
+                        int paginaIndex = (paginaAtual * 3) - 3;
+                        int paginaFinal = (paginaAtual * 3) > (livrosInfo.size() - 1) ? livrosInfo.size() - 1 : paginaAtual * 3;
+
+                        System.out.println("paginaIndex:" + paginaIndex);
+                        System.out.println("paginaFinal:" + paginaFinal);
+
+                        List<LivroDTO> livrosAtuais = livrosInfo.subList(paginaIndex, paginaFinal);
+
+                        textoInterfaceServico.exibirLivrosRegistrados(livrosAtuais, paginaAtual, totalPaginas);
+
                         var exibirLivroOpcao = teclado.nextLine();
-                        if(exibirLivroOpcao == "0"){
+
+                        if (exibirLivroOpcao.equals("0")) {
                             menuSelecionado = 0;
                             continue;
-                        } else if (exibirLivroOpcao.equalsIgnoreCase("P") && pagina < totalPaginas) {
-                            pagina += 1;
-                        } else if (exibirLivroOpcao.equalsIgnoreCase("A") && totalPaginas > pagina && pagina > 1){
-                            pagina -= 1;
+                        } else if (exibirLivroOpcao.isEmpty()) {
+                            paginacao = false;
+                            menuSelecionado = 0;
+                            continue;
+                        } else if (exibirLivroOpcao.equalsIgnoreCase("P") && paginaAtual < totalPaginas) {
+                            paginaAtual += 1;
+                        } else if (exibirLivroOpcao.equalsIgnoreCase("A") && paginaAtual <= totalPaginas && totalPaginas > 1) {
+                            paginaAtual -= 1;
                         }
 
                     }
-
-
-                    textoInterfaceServico.exibirLivrosRegistrados(livrosInfo);
-
-                    teclado.nextLine();
-                    menuSelecionado = 0;
 
                     break;
 
 
                 case 3:
                     List<Autor> autores = autorRepositorio.findAll();
-//                    List<Autor> autoresInfo = autores.stream().map(autor -> new AutorDTO(autor.getNome(), autor.getData_nascimento(), autor.getData_falecimento())).toList();
 
                     textoInterfaceServico.exibirAutoresRegistrados(autores);
 

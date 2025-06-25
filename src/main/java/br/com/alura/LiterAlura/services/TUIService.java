@@ -57,7 +57,7 @@ public class TUIService {
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
     }
 
-    public void exibirLivrosRegistrados(List<LivroDTO> livros) {
+    public void exibirLivrosRegistrados(List<LivroDTO> livros, int paginaAtual, int totalPaginas) {
         this.limparTela();
         this.exibirMenuCabecalho();
 
@@ -79,7 +79,22 @@ public class TUIService {
             System.out.println("│                                                                          │");
 
         }
-        System.out.println("│                                                                          │");
+
+        if (totalPaginas > 1) {
+            String textoPaginaAtual = paginaAtual + "/" + totalPaginas;
+            String textoPaginaAtualCompletar = FormatarTextoUtil.caractersCompletar(textoPaginaAtual, 10, 1);
+            System.out.println("│  Página " + textoPaginaAtual + textoPaginaAtualCompletar + "│");
+            System.out.println("│                                                                          │");
+            if (paginaAtual > 1) {
+                System.out.println("│  [A] - Página anterior                                                   │");
+            }
+            if (paginaAtual < totalPaginas) {
+                System.out.println("│  [P] - Próxima página                                                    │");
+            }
+        } else {
+            System.out.println("│                                                                          │");
+        }
+
         System.out.println("│  [ENTER] - Voltar                                                        │");
         System.out.println("│                                                                          │");
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
