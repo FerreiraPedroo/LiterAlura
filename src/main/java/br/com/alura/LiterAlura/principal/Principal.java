@@ -129,21 +129,13 @@ public class Principal {
                     int paginaAtual = 1;
                     int totalPaginas = (livrosInfo.size() - 1) > 3 ? (int) Math.ceil(((livrosInfo.size() - 1.0) / 3.0)) : 1;
 
-                    System.out.println("livrosInfo.size():" + livrosInfo.size());
-                    System.out.println("totalPaginas:" + totalPaginas);
-                    System.out.println("paginaAtual:" + paginaAtual);
-
                     boolean paginacao = true;
 
                     while (paginacao) {
                         int paginaIndex = (paginaAtual * 3) - 3;
                         int paginaFinal = (paginaAtual * 3) > (livrosInfo.size() - 1) ? livrosInfo.size() - 1 : paginaAtual * 3;
 
-                        System.out.println("paginaIndex:" + paginaIndex);
-                        System.out.println("paginaFinal:" + paginaFinal);
-
                         List<LivroDTO> livrosAtuais = livrosInfo.subList(paginaIndex, paginaFinal);
-
                         textoInterfaceServico.exibirLivrosRegistrados(livrosAtuais, paginaAtual, totalPaginas);
 
                         var exibirLivroOpcao = teclado.nextLine();
@@ -160,9 +152,7 @@ public class Principal {
                         } else if (exibirLivroOpcao.equalsIgnoreCase("A") && paginaAtual <= totalPaginas && totalPaginas > 1) {
                             paginaAtual -= 1;
                         }
-
                     }
-
                     break;
 
 
