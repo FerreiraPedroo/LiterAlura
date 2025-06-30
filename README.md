@@ -35,4 +35,4 @@ Este projeto está licenciado sob a licença **MIT**.
 
 ---
 
-> Se encontrou algum problema ao executar o projeto, veja as [issues abertas](https://github.com/FerreiraPedroo/LiterAlura/issues) ou abra uma nova. :contentReference[oaicite:1]{index=1}
+> Se encontrou algum problema ao executar o projeto, veja as [issues abertas](https://github.com/FerreiraPedroo/LiterAlura/issues) ou abra uma nova.
