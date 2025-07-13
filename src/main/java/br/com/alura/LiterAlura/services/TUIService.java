@@ -35,6 +35,7 @@ public class TUIService {
         System.out.println("│  3 - Listar autores registrados                                          │");
         System.out.println("│  4 - Listar autores vivos em um deteminado ano                           │");
         System.out.println("│  5 - Listar livros em um deteminado idioma                               │");
+        System.out.println("│  6 - Listar top 10 mais baixados                                         │");
         System.out.println("│                                                                          │");
         System.out.println("│  0 - Sair                                                                │");
         System.out.println("│                                                                          │");
@@ -285,6 +286,36 @@ public class TUIService {
         System.out.println("│                                                                          │");
         System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
     }
+
+    public void exibirTop10Livros(List<Livro> livros) {
+        this.limparTela();
+        this.exibirMenuCabecalho();
+
+        System.out.println("│    TOP 10 LIVROS BAIXADOS                                                │");
+        System.out.println("│                                                                          │");
+        for (Livro livro : livros) {
+            String tituloCompletar = FormatarTextoUtil.caractersCompletar(livro.getTitulo(), 14, 1);
+            String autorCompletar = FormatarTextoUtil.caractersCompletar(livro.getAutor().getNome(), 14, 1);
+            String idiomaCompletar = FormatarTextoUtil.caractersCompletar(Arrays.stream(livro.getIdiomas()).reduce("", (acc, cur) -> cur == "" ? acc : acc + cur + " | "), 14, 1);
+            String contagemDownloadsCompletar = FormatarTextoUtil.caractersCompletar(Integer.toString(livro.getContagem_downloads()).trim(), 27, 1);
+
+            System.out.println("│    -----------------------------------------------------------------     │");
+            System.out.println("│     Titulo: " + livro.getTitulo() + tituloCompletar + "│");
+            System.out.println("│     Autor : " + livro.getAutor().getNome() + autorCompletar + "│");
+            System.out.println("│     Idioma: " + Arrays.stream(livro.getIdiomas()).reduce("", (acc, cur) -> cur == "" ? acc : acc + cur + " | ") + idiomaCompletar + "│");
+            System.out.println("│     Número de downloads: " + livro.getContagem_downloads() + contagemDownloadsCompletar + "│");
+            System.out.println("│    -----------------------------------------------------------------     │");
+            System.out.println("│                                                                          │");
+
+        }
+        System.out.println("│    -----------------------------------------------------------------     │");
+        System.out.println("│                                                                          │");
+        System.out.println("│                                                                          │");
+        System.out.println("│  [ENTER] - Voltar                                                        │");
+        System.out.println("│                                                                          │");
+        System.out.println("└──────────────────────────────────────────────────────────────────────────┘");
+    }
+
 
     public void exibirSairPrograma() {
         System.out.println("┌──────────────────────────────────────────────────────────────────────────┐");

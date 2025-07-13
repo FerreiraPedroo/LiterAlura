@@ -17,4 +17,7 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
 
     @Query(value = "SELECT * FROM livros l WHERE :idioma = ANY(l.idiomas)", nativeQuery = true)
     List<Livro> buscarLivroPorIdioma(@Param("idioma") String idioma);
+
+    @Query("SELECT l FROM Livro l ORDER BY l.contagem_downloads DESC")
+    List<Livro> buscarTop10Livros();
 }

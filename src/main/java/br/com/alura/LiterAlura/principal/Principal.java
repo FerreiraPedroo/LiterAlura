@@ -226,6 +226,15 @@ public class Principal {
 
 
                 case 6:
+
+                    List<Livro> livrosTop10 = livroRepositorio.buscarTop10Livros();
+
+                    textoInterfaceServico.exibirTop10Livros(livrosTop10);
+
+                    teclado.nextLine();
+                    menuSelecionado = 0;
+
+                   // textoInterfaceServico.exibirTop10Baixados();
                     break;
                 case 7:
                     break;
